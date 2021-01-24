@@ -15,6 +15,13 @@ function AuthProvider({ children }) {
 		return auth.createUserWithEmailAndPassword(email, password);
 	}
 
+	function signout() {
+		return auth.signOut();
+	}
+	function resetpassword(email) {
+		return auth.sendPasswordResetEmail(email);
+	}
+
 	function signin(email, password) {
 		return auth.isSignInWithEmailPassword(email, password);
 	}
@@ -30,6 +37,9 @@ function AuthProvider({ children }) {
 	const value = {
 		currentUser,
 		signup,
+		resetpassword,
+		signin,
+		signout,
 	};
 
 	return (

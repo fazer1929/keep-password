@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useAuth } from "../../AuthContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 function SignUp() {
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -28,7 +28,9 @@ function SignUp() {
 	}
 	return (
 		<div>
-			<div>Already Have An Account? Login.</div>
+			<div>
+				Already Have An Account?<Link to="/signin"> Sign In.</Link>
+			</div>
 			{error}
 			<form>
 				<input type="email" placeholder="email" required ref={emailRef} />
