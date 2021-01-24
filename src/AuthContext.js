@@ -15,6 +15,9 @@ function AuthProvider({ children }) {
 		return auth.createUserWithEmailAndPassword(email, password);
 	}
 
+	function signin(email, password) {
+		return auth.isSignInWithEmailPassword(email, password);
+	}
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
 			setCurrentUser(user);
@@ -31,7 +34,7 @@ function AuthProvider({ children }) {
 
 	return (
 		<AuthContext.Provider value={value}>
-			{!setLoading && children}
+			{!loading && children}
 		</AuthContext.Provider>
 	);
 }

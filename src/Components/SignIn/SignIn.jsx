@@ -1,29 +1,25 @@
 import React, { useRef, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import { useHistory } from "react-router-dom";
-function SignUp() {
+
+export default function SignIn() {
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
-	const { signup } = useAuth();
+	const { signin } = useAuth();
 	const emailRef = useRef();
 	const passRef = useRef();
 	const history = useHistory();
-
-	const passConfirmRef = useRef();
 	function handleSubmit(e) {
 		e.preventDefault();
-		if (passRef.current.value !== passConfirmRef.current.value) {
-			return setError("Passwords Do Not Match");
-		}
 		try {
 			setError("");
 			setLoading(true);
-			signup(emailRef.current.value, passRef.current.value);
+			signin(emailRef.current.value, passRef.current.value);
 			setLoading(false);
 			history.push("/");
 		} catch {
 			setLoading(false);
-			setError("Failed To Create Account");
+			setError("Failed To Login");
 		}
 	}
 	return (
@@ -33,18 +29,10 @@ function SignUp() {
 			<form>
 				<input type="email" placeholder="email" required ref={emailRef} />
 				<input type="password" placeholder="password" required ref={passRef} />
-				<input
-					type="password"
-					placeholder="password Confirm"
-					required
-					ref={passConfirmRef}
-				/>
 				<button disabled={loading} onClick={handleSubmit}>
-					SignUp
+					SignIn
 				</button>
 			</form>
 		</div>
 	);
 }
-
-export default SignUp;
