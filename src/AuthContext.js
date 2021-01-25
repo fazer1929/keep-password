@@ -23,7 +23,7 @@ function AuthProvider({ children }) {
 	}
 
 	function signin(email, password) {
-		return auth.isSignInWithEmailPassword(email, password);
+		return auth.signInWithEmailAndPassword(email, password);
 	}
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {

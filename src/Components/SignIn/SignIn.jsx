@@ -16,7 +16,7 @@ export default function SignIn() {
 			signin(emailRef.current.value, passRef.current.value);
 			setLoading(false);
 			history.push("/");
-		} catch {
+		} catch (e) {
 			setLoading(false);
 			setError("Failed To Login");
 		}
