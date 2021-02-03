@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 
 const AuthContext = React.createContext();
 
@@ -12,6 +12,14 @@ function AuthProvider({ children }) {
 	const [loading, setLoading] = useState(true);
 
 	function signup(email, password) {
+		db.collection("users")
+			.doc(currentUser.email)
+			.set({
+				email: currentUser.email,
+			})
+			.catch(function (error) {
+				console.error("Error adding document: ", error);
+			});
 		return auth.createUserWithEmailAndPassword(email, password);
 	}
 

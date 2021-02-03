@@ -5,15 +5,25 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
+import HomePage from "./Pages/HomePage";
+import "semantic-ui-css/semantic.min.css";
+import Footer from "./Components/Footer/Footer";
+import AddInstance from "./Components/AddInstance/AddInstance";
 function App() {
 	return (
 		<Router>
 			<Switch>
 				<PrivateRoute exact path="/" component={Dashboard} />
-				<Route path="/signup" component={SignUp} />
-				<Route path="/signin" component={SignIn} />
+				<Route path="/add" component={AddInstance} />
+				<Route path="/signin">
+					<HomePage comp={SignIn} />
+				</Route>
+				<Route path="/signup">
+					<HomePage comp={SignUp} />
+				</Route>
 				<Route path="/forgot-password" component={ForgotPassword} />
 			</Switch>
+			<Footer />
 		</Router>
 	);
 }
