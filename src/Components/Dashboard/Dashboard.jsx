@@ -2,6 +2,8 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import { db } from "../../firebase";
+import AddInstance from "../AddInstance/AddInstance";
+import PassTable from "../PassTable/PassTable";
 function Dashboard() {
 	const { currentUser, signout } = useAuth();
 	const history = useHistory();
@@ -43,10 +45,8 @@ function Dashboard() {
 	return (
 		<div>
 			DashBoard
-			<p>Email: {currentUser.email}</p>
-			<button onClick={logout}>LogOut</button>
-			<button onClick={addSomething}>AddBitch</button>
-			<button onClick={readSomething}>ReadBitch</button>
+			<AddInstance />
+			<PassTable />
 		</div>
 	);
 }

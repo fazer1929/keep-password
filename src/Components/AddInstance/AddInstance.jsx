@@ -13,7 +13,7 @@ import {
 	Container,
 	Icon,
 } from "semantic-ui-react";
-
+import { aesEncrypt } from "../../AES";
 export default function AddInstance() {
 	const { currentUser, signout } = useAuth();
 	const history = useHistory();
@@ -42,29 +42,32 @@ export default function AddInstance() {
 		setPassword(e.target.value);
 	}
 
-	function handleSubmit(e) {
-		e.preventDefault();
-		try {
-			setLoading(true);
-		} catch (e) {}
-	}
+	function handleSubmit(e) {}
 
-	function addPassword() {
+	async function addPassword(e) {
+		e.preventDefault();
+		const data = await {
+			name: name,
+			link: link,
+			pass: aesEncrypt(password),
+		};
+		setLoading(true);
 		const ref = db.collection("users").doc(currentUser.email);
 		ref
 			.collection("passwords")
-			.doc()
-			.add({})
-			.catch((e) => console.log(e));
-	}
-	function readSomething() {
-		db.collection("users")
+			.where("link", "==", link)
+			.where("name", "==", name)
 			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
-					console.log(`${doc.id} => ${doc.data()}`);
-				});
-			});
+			.then((doc) => {
+				if (doc.size === 0) {
+					ref
+						.collection("passwords")
+						.add(data)
+						.catch((e) => console.log(e));
+					setLoading(false);
+				}
+			})
+			.catch((e) => console.log(e));
 	}
 
 	return (
@@ -116,9 +119,11 @@ export default function AddInstance() {
 									textAlign="center"
 									verticalAlign="middle"
 								>
-									<Button basic onClick={() => setPassVisible(!passVisible)}>
-										<Icon name={passVisible ? "eye slash" : "eye"} />
-									</Button>
+									<Button
+										basic
+										onClick={() => setPassVisible(!passVisible)}
+										icon={passVisible ? "eye slash" : "eye"}
+									></Button>
 								</Grid.Column>
 							</Grid>
 						</Grid.Column>
@@ -126,12 +131,13 @@ export default function AddInstance() {
 						<Grid.Column width={3}>
 							<Button
 								loading={loading}
-								onClick={handleSubmit}
-								color="teal"
+								onClick={addPassword}
+								color="green"
+								inverted
 								fluid
 								size="large"
 							>
-								Login
+								Add
 							</Button>
 						</Grid.Column>
 					</Grid>

@@ -14,7 +14,6 @@ function App() {
 		<Router>
 			<Switch>
 				<PrivateRoute exact path="/" component={Dashboard} />
-				<Route path="/add" component={AddInstance} />
 				<Route path="/signin">
 					<HomePage comp={SignIn} />
 				</Route>
