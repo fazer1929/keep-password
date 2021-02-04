@@ -9,6 +9,7 @@ import HomePage from "./Pages/HomePage";
 import "semantic-ui-css/semantic.min.css";
 import Footer from "./Components/Footer/Footer";
 import AddInstance from "./Components/AddInstance/AddInstance";
+import PassTable from "./Components/PassTable/PassTable";
 function App() {
 	return (
 		<Router>
@@ -17,12 +18,15 @@ function App() {
 				<Route path="/signin">
 					<HomePage comp={SignIn} />
 				</Route>
+				<Route path="/test">
+					<HomePage comp={PassTable} />
+				</Route>
 				<Route path="/signup">
 					<HomePage comp={SignUp} />
 				</Route>
 				<Route path="/forgot-password" component={ForgotPassword} />
 			</Switch>
-			<Footer />
+			{/* <Footer /> */}
 		</Router>
 	);
 }

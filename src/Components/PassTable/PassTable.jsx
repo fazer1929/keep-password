@@ -18,55 +18,34 @@ import {
 export default function PassTable() {
 	const { currentUser } = useAuth();
 	const history = useHistory();
-	const [name, setName] = useState("");
 	const [link, setLink] = useState("");
-	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [credList, setCredList] = useState([]);
 	const [passVisible, setPassVisible] = useState(false);
 
+	const [list, setList] = useState([]);
+	const changeVisiblity = (i) => {
+		console.log(i);
+	};
 	useEffect(() => {
+		const list_temp = [];
 		db.collection("users")
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {});
-			});
-	}, []);
-	function handleLinkChange(e) {
-		setLink(e.target.value);
-	}
-	function handleNameChange(e) {
-		setName(e.target.value);
-	}
-	function handlePassChange(e) {
-		setPassword(e.target.value);
-	}
-
-	function handleSubmit(e) {
-		e.preventDefault();
-		try {
-			setLoading(true);
-		} catch (e) {}
-	}
-
-	function addPassword() {
-		const ref = db.collection("users").doc(currentUser.email);
-		ref
+			.doc(currentUser.email)
 			.collection("passwords")
-			.doc()
-			.add({})
-			.catch((e) => console.log(e));
-	}
-	function readSomething() {
-		db.collection("users")
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
-					console.log(`${doc.id} => `);
-					console.log(doc.data());
-				});
-			});
-	}
+			.onSnapshot(
+				{
+					// Listen for document metadata changes
+					includeMetadataChanges: true,
+				},
+				(doc) => {
+					const data = doc.docs.map((elem) => {
+						const element = elem.data();
+						element["visible"] = false;
+						return element;
+					});
+					setList(data);
+				},
+			);
+	}, []);
 
 	return (
 		<div
@@ -74,7 +53,6 @@ export default function PassTable() {
 				margin: "60px auto",
 			}}
 		>
-			<Button onClick={readSomething}></Button>
 			<Container textAlign="center">
 				<Header
 					as="h2"
@@ -82,6 +60,7 @@ export default function PassTable() {
 					textAlign="center"
 					content="Your Passwords"
 				/>
+
 				<Table unstackable>
 					<Table.Header>
 						<Table.Row>
@@ -93,19 +72,22 @@ export default function PassTable() {
 					</Table.Header>
 
 					<Table.Body>
-						<Table.Row>
-							<Table.Cell>John</Table.Cell>
-							<Table.Cell selectable>
-								<a href="/">www.google.com</a>
-							</Table.Cell>
-							<Table.Cell
-								selectable
-								icon="eye"
-								textAlign="center"
-								width={2}
-							></Table.Cell>
-							<Table.Cell textAlign="right">None</Table.Cell>
-						</Table.Row>
+						{list.map((elem, i) => (
+							<Table.Row key={i}>
+								<Table.Cell>{elem.name}</Table.Cell>
+								<Table.Cell selectable>
+									<a href={elem.link} target="#">
+										{elem.link}
+									</a>
+								</Table.Cell>
+								<Table.Cell selectable textAlign="center" width={2}>
+									<a onClick={() => changeVisiblity({ i })} target="#">
+										<Icon name="eye" />
+									</a>
+								</Table.Cell>
+								<Table.Cell textAlign="right">{elem.pass}</Table.Cell>
+							</Table.Row>
+						))}
 					</Table.Body>
 				</Table>
 			</Container>
