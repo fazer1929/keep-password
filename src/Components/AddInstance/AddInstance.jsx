@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
+import PasswordStrengthBar from "react-password-strength-bar";
 import { db } from "../../firebase";
 import {
 	Row,
@@ -9,6 +10,7 @@ import {
 	Segment,
 	Form,
 	Header,
+	Message,
 	Button,
 	Container,
 	Icon,
@@ -19,9 +21,12 @@ export default function AddInstance() {
 	const history = useHistory();
 	const [name, setName] = useState("");
 	const [link, setLink] = useState("");
+	const [error, setError] = useState("");
+	const [isPasswordStrong, setIsPasswordStrong] = useState(false);
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [passVisible, setPassVisible] = useState(false);
+	const [messageInvisible, setMessageInvisible] = useState(true);
 
 	function logout() {
 		try {
@@ -42,34 +47,50 @@ export default function AddInstance() {
 		setPassword(e.target.value);
 	}
 
-	function handleSubmit(e) {}
-
 	async function addPassword(e) {
 		e.preventDefault();
-		const data = await {
-			name: name,
-			link: link,
-			pass: aesEncrypt(password),
-		};
-		setLoading(true);
-		const ref = db.collection("users").doc(currentUser.email);
-		ref
-			.collection("passwords")
-			.where("link", "==", link)
-			.where("name", "==", name)
-			.get()
-			.then((doc) => {
-				if (doc.size === 0) {
-					ref
-						.collection("passwords")
-						.add(data)
-						.catch((e) => console.log(e));
-					setLoading(false);
-				}
-			})
-			.catch((e) => console.log(e));
+		if (isPasswordStrong) {
+			const data = await {
+				name: name,
+				link: link,
+				pass: aesEncrypt(password),
+			};
+			setLoading(true);
+			const ref = db.collection("users").doc(currentUser.email);
+			ref
+				.collection("passwords")
+				.where("link", "==", link)
+				.where("name", "==", name)
+				.get()
+				.then((doc) => {
+					if (doc.size === 0) {
+						ref
+							.collection("passwords")
+							.add(data)
+							.catch((e) => console.log(e));
+						setLoading(false);
+						setName("");
+						setLink("");
+						setPassword("");
+					} else {
+						showMessage(
+							"You can't save two passwords for the same credentials",
+						);
+						setLoading(false);
+					}
+				})
+				.catch((e) => console.log(e));
+		} else {
+			showMessage("Please Use A Stronger Password.");
+		}
 	}
-
+	function showMessage(message) {
+		setError(message);
+		setMessageInvisible(false);
+		setTimeout(() => {
+			setMessageInvisible(true);
+		}, 5000);
+	}
 	return (
 		<div>
 			<Container textAlign="center">
@@ -79,7 +100,8 @@ export default function AddInstance() {
 					textAlign="center"
 					content="Add Passwords"
 				/>
-				<Form size="large">
+				<Message error hidden={messageInvisible} content={error} />
+				<Form size="large" loading={loading}>
 					<Grid stackable>
 						<Grid.Column width={4}>
 							<Form.Input
@@ -113,12 +135,16 @@ export default function AddInstance() {
 										placeholder="Password"
 										type={passVisible ? "text" : "password"}
 									/>
+									<PasswordStrengthBar
+										password={password}
+										onChangeScore={(score) =>
+											score >= 3
+												? setIsPasswordStrong(true)
+												: setIsPasswordStrong(false)
+										}
+									/>
 								</Grid.Column>
-								<Grid.Column
-									width={1}
-									textAlign="center"
-									verticalAlign="middle"
-								>
+								<Grid.Column width={1} textAlign="center" verticalAlign="top">
 									<Button
 										basic
 										onClick={() => setPassVisible(!passVisible)}
@@ -130,7 +156,6 @@ export default function AddInstance() {
 						<Grid.Column width={1}></Grid.Column>
 						<Grid.Column width={3}>
 							<Button
-								loading={loading}
 								onClick={addPassword}
 								color="green"
 								inverted

@@ -1,0 +1,23 @@
+.userNumbers {
+	background: -webkit-linear-gradient(#007991, #78ffd6);
+	font-size: "6rem";
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	letter-spacing: "20px";
+	color: "ActiveBorder";
+	font-weight: 800;
+}
+
+.footer {
+	background-color: "#333";
+	padding: "20px";
+	min-height: "45vh";
+	display: "flex";
+	justify-content: "center";
+	align-content: "center";
+}
+.userText {
+	color: "#007991";
+	font-size: "2rem";
+}

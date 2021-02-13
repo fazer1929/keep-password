@@ -14,7 +14,7 @@ import {
 	Container,
 	Icon,
 } from "semantic-ui-react";
-
+import { aesEncrypt, aesDecrypt } from "../../AES";
 export default function PassTable() {
 	const { currentUser } = useAuth();
 	const history = useHistory();
@@ -23,8 +23,19 @@ export default function PassTable() {
 	const [passVisible, setPassVisible] = useState(false);
 
 	const [list, setList] = useState([]);
-	const changeVisiblity = (i) => {
-		console.log(i);
+	const changeVisiblity = ({ i }) => {
+		const index = parseInt(i);
+		const itemList = list;
+		const item = itemList[parseInt(index)];
+
+		item["visible"] = !item["visible"];
+		if (item["visible"]) {
+			item["pass"] = aesDecrypt(item["pass"]);
+		} else {
+			item["pass"] = aesEncrypt(item["pass"]);
+		}
+		itemList[i] = item;
+		setList([...itemList]);
 	};
 	useEffect(() => {
 		const list_temp = [];

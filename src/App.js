@@ -26,7 +26,7 @@ function App() {
 				</Route>
 				<Route path="/forgot-password" component={ForgotPassword} />
 			</Switch>
-			{/* <Footer /> */}
+			<Footer />
 		</Router>
 	);
 }
